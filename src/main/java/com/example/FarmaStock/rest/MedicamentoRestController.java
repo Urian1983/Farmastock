@@ -47,7 +47,7 @@ public class MedicamentoRestController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/medicamentos/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@RequestParam int id) {
         medicamentoDAO.delete(id);
