@@ -4,15 +4,50 @@
  */
 package com.example.FarmaStock.rest;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.FarmaStock.dao.MedicamentoDAO;
+import com.example.FarmaStock.entities.Medicamento;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
-/**
- *
- * @author gbrlt
- */
 @RestController
 @RequestMapping("api")
 public class MedicamentoRestController {
-    
+    private final MedicamentoDAO medicamentoDAO;
+
+    public MedicamentoRestController(MedicamentoDAO medicamentoDAO) {
+        this.medicamentoDAO = medicamentoDAO;
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Medicamento create(@RequestBody Medicamento medicamento) {
+        medicamentoDAO.save(medicamento);
+        return medicamento;
+    }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public Medicamento update(@RequestBody Medicamento medicamento) {
+        return medicamentoDAO.update(medicamento)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<Medicamento> findAll() {
+        return medicamentoDAO.findAll()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public Medicamento findById(@RequestParam int id) {
+        return medicamentoDAO.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@RequestParam int id) {
+        medicamentoDAO.delete(id);
+    }
 }

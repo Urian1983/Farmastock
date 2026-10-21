@@ -4,7 +4,7 @@
  */
 package com.example.FarmaStock.dao;
 
-import com.example.FarmaStock.entity.Client;
+import com.example.FarmaStock.entities.Client;
 import java.util.List;
 
 public interface ClientDAO {

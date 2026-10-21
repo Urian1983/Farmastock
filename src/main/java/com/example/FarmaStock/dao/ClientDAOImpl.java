@@ -4,7 +4,7 @@
  */
 package com.example.FarmaStock.dao;
 
-import com.example.FarmaStock.entity.Client;
+import com.example.FarmaStock.entities.Client;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;

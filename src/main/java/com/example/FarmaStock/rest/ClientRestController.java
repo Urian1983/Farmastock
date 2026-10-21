@@ -5,7 +5,7 @@
 package com.example.FarmaStock.rest;
 
 import com.example.FarmaStock.dao.ClientDAO;
-import com.example.FarmaStock.entity.Client;
+import com.example.FarmaStock.entities.Client;
 import java.util.List;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
