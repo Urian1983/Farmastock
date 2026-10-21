@@ -2,12 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.FarmaStock.dao;
+package com.example.FarmaStock.entity;
 
 /**
  *
  * @author gbrlt
  */
-public class ProdutoDAO {
+public class Medicamento {
     
 }
