@@ -7,11 +7,7 @@ package com.example.FarmaStock.dao;
 import com.example.FarmaStock.entity.Client;
 import java.util.List;
 
-/**
- *
- * @author UsuarioM
- */
-public class ClientDAO {
+public interface ClientDAO {
     List<Client> findAll();
 
     Client findById(Long id);
