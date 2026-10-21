@@ -4,14 +4,10 @@
  */
 package com.example.FarmaStock.entities;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-/**
- *
- * @author UsuarioM
- */
+@Entity
+@Table(name="clientes")
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
