@@ -6,8 +6,10 @@ package com.example.FarmaStock.rest;
 
 import com.example.FarmaStock.dao.MedicamentoDAO;
 import com.example.FarmaStock.entities.Medicamento;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("api")
