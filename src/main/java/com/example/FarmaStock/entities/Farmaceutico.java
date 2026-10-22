@@ -3,29 +3,25 @@ package com.example.FarmaStock.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="farmaceutico")
+@Table(name = "farmaceuticos")
 public class Farmaceutico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nombre;
-    private String apellido;
+    @Column(name = "nombre_usuario")
+    private String nombreUsuario;
+
     private String email;
-    
-     // Constructor vacío
+
     public Farmaceutico() {
     }
 
-    // Constructor con parámetros
-    public Farmaceutico(String nombre, String apellido,
-                  String email, String telefono) {
-        this.nombre = nombre;
-        this.apellido = apellido;
+    public Farmaceutico(String nombreUsuario, String email) {
+        this.nombreUsuario = nombreUsuario;
         this.email = email;
     }
 
-    // Getters y setters
     public Long getId() {
         return id;
     }
@@ -34,20 +30,12 @@ public class Farmaceutico {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getNombreUsuario() {
+        return nombreUsuario;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
     }
 
     public String getEmail() {
