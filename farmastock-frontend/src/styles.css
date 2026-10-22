@@ -1,0 +1,12 @@
+body { background: #f8f9fa; }
+#root { min-height: 100vh; display: flex; flex-direction: column; }
+#root > main { flex: 1; }
+#Login { display: flex; align-items: center; justify-content: center; padding: 2rem 0; }
+.login-card { border: 1px solid #ced4da; padding: 2rem; border-radius: .5rem; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,.05); }
+.pie { margin-top: auto; background: #fff; border-top: 1px solid #dee2e6; padding: .9rem 0; font-size: .85rem; }
+.dato { background: #fff3cd; padding: 0 .25rem; border-radius: .2rem; }
+.stock-bajo { color: #c0392b; font-weight: 700; }
+.detalle dt { font-weight: 600; }
+.detalle dd { margin-bottom: .6rem; }
+.modal-body h6 { font-weight: 700; margin-top: 1.2rem; }
+.modal { overflow-y: auto; }
