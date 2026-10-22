@@ -6,6 +6,8 @@ import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 import java.util.Optional;
+
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,15 +19,17 @@ public class MedicamentoDAOImpl implements MedicamentoDAO{
     }
 
     @Override
+    @Transactional
     public void save(Medicamento medicamento) {
         entityManager.persist(medicamento);
     }
 
     @Override
+    @Transactional
     public Optional<Medicamento> update(Medicamento medicamento) {
         Optional<Medicamento> medicamentoToUpdate = this.findById(medicamento.getId());
         if (medicamentoToUpdate.isEmpty()) {
-            return Optional.of(medicamento);
+            return Optional.of(entityManager.merge(medicamento));
         }
         else   {
             return Optional.empty();
@@ -33,6 +37,7 @@ public class MedicamentoDAOImpl implements MedicamentoDAO{
     }
 
     @Override
+    @Transactional
     public boolean delete(int id) {
         Optional<Medicamento> medicamentoToRemove = this.findById(id);
         if(medicamentoToRemove.isPresent()) {
@@ -48,10 +53,10 @@ public class MedicamentoDAOImpl implements MedicamentoDAO{
     }
 
     @Override
-    public Optional<List<Medicamento>> findAll() {
+    public List<Medicamento> findAll() {
         TypedQuery<Medicamento> query;
         query = entityManager.createQuery("FROM Medicamento", Medicamento.class);
-        return Optional.ofNullable(query.getResultList());
+        return query.getResultList();
     }
 
 }

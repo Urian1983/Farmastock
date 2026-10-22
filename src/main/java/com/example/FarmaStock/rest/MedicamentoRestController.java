@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.example.FarmaStock.rest;
 
 import com.example.FarmaStock.dao.MedicamentoDAO;
@@ -37,9 +33,13 @@ public class MedicamentoRestController {
     @GetMapping("/medicamentos")
     @ResponseStatus(HttpStatus.OK)
     public List<Medicamento> findAll() {
-        return medicamentoDAO.findAll()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        List<Medicamento> medicamentos = medicamentoDAO.findAll();
+        if(medicamentos.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return medicamentos;
     }
+
     @GetMapping("/medicamentos/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Medicamento findById(@RequestParam int id) {

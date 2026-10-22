@@ -10,5 +10,5 @@ public interface MedicamentoDAO {
     Optional<Medicamento> update(Medicamento medicamento);
     boolean delete(int id);
     Optional<Medicamento> findById(int id);
-    Optional<List<Medicamento>> findAll();
+    List <Medicamento> findAll();
     }
