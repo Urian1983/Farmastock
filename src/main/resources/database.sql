@@ -12,7 +12,7 @@ USE `farmastock`;
 DROP TABLE IF EXISTS `authorities`;
 DROP TABLE IF EXISTS `medicamentos`;
 DROP TABLE IF EXISTS `farmaceutico`;
-DROP TABLE IF EXISTS `cliente`;
+DROP TABLE IF EXISTS `clientes`;
 DROP TABLE IF EXISTS `users`;
 
 -- ------------------------------------------------------
@@ -28,7 +28,7 @@ CREATE TABLE `farmaceutico` (
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Table structure for table `cliente`
-CREATE TABLE `cliente` (
+CREATE TABLE `clientes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre_usuario` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -91,9 +91,9 @@ INSERT INTO `farmaceutico` VALUES
 (20, 'daniel_salud', 'daniel.salud@farmacia.es');
 UNLOCK TABLES;
 
--- Dumping data for table `cliente`
-LOCK TABLES `cliente` WRITE;
-INSERT INTO `cliente` VALUES 
+-- Dumping data for table `clientes`
+LOCK TABLES `clientes` WRITE;
+INSERT INTO `clientes` VALUES 
 (1, 'juan_cliente', 'juan.cliente@gmail.com'),
 (2, 'marcos_cliente', 'marcos.cliente@gmail.com'),
 (3, 'maria_perez', 'maria.perez@hotmail.com'),
@@ -137,7 +137,7 @@ INSERT INTO `medicamentos` VALUES
 (16, 'Salbutamol 100mcg', 'Salbutamol', 15, 'Inhalador', 7.20),
 (17, 'Clonazepam 1mg', 'Clonazepam', 30, 'Gotas', 3.80),
 (18, 'Dalsy 20mg/ml', 'Ibuprofeno', 40, 'Suspensión', 5.60),
-(19, 'Ebastel Flas 20mg', 'Ebastina', 55, 'Comprimidos Bucodispersables', 8.30),
+(19, 'Ebastel Flas 20mg', 'Ebastina', 55, 'Comprimidos', 8.30),
 (20, 'Valium 10mg', 'Diazepam', 25, 'Comprimidos', 4.90);
 UNLOCK TABLES;
 
@@ -151,8 +151,8 @@ UNLOCK TABLES;
 -- Dumping data for table `authorities`
 LOCK TABLES `authorities` WRITE;
 INSERT INTO `authorities` VALUES 
-('juan', 'ROL_CLIENTE'),
-('pedro', 'ROL_FARMACEUTICO');
+('juan', 'ROLE_CLIENTE'),
+('pedro', 'ROLE_FARMACEUTICO');
 UNLOCK TABLES;
 
 -- ------------------------------------------------------
