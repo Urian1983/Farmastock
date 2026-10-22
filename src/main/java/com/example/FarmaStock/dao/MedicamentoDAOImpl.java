@@ -32,7 +32,7 @@ public class MedicamentoDAOImpl implements MedicamentoDAO{
             return Optional.empty();
         }
         else   {
-            return Optional.of(entityManager.merge(medicamentoToUpdate.get()));
+            return Optional.of(entityManager.merge(medicamento));
 
         }
     }
