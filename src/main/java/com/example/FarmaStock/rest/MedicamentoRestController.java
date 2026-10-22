@@ -20,34 +20,34 @@ public class MedicamentoRestController {
         this.medicamentoDAO = medicamentoDAO;
     }
 
-    @PostMapping
+    @PostMapping("/medicamentos")
     @ResponseStatus(HttpStatus.CREATED)
     public Medicamento create(@RequestBody Medicamento medicamento) {
         medicamentoDAO.save(medicamento);
         return medicamento;
     }
 
-    @PutMapping
+    @PutMapping("/medicamentos")
     @ResponseStatus(HttpStatus.OK)
     public Medicamento update(@RequestBody Medicamento medicamento) {
         return medicamentoDAO.update(medicamento)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping
+    @GetMapping("/medicamentos")
     @ResponseStatus(HttpStatus.OK)
     public List<Medicamento> findAll() {
         return medicamentoDAO.findAll()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
-    @GetMapping
+    @GetMapping("/medicamentos/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Medicamento findById(@RequestParam int id) {
         return medicamentoDAO.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/medicamentos/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@RequestParam int id) {
         medicamentoDAO.delete(id);

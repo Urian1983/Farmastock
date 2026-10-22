@@ -22,6 +22,31 @@ public class Medicamento {
     @Column(name="precio")
     private float precio;
 
+    //Constructores
+
+    public Medicamento() {
+    }
+
+    public Medicamento(int id, String nombre, String principioActivo,
+                       int cantidad, FormatoMedicamento formatoMedicamento,
+                       float precio) {
+        this.id = id;
+        this.nombre = nombre;
+        this.principioActivo = principioActivo;
+        this.cantidad = cantidad;
+        this.formatoMedicamento = formatoMedicamento;
+        this.precio = precio;
+    }
+
+    public Medicamento(String nombre, String principioActivo,
+                       int cantidad, FormatoMedicamento formatoMedicamento,
+                       float precio) {
+        this.nombre = nombre;
+        this.principioActivo = principioActivo;
+        this.cantidad = cantidad;
+        this.formatoMedicamento = formatoMedicamento;
+        this.precio = precio;
+    }
     //getters y setters
 
     public int getId() {
