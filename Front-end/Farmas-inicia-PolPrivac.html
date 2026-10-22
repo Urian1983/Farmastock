@@ -65,8 +65,8 @@
       <table class="table table-hover table-sm mb-0">
         <thead class="thead-light">
           <tr>
-            <th>Nombre comercial</th><th>Principio activo</th><th>Concentración</th>
-            <th>Forma</th><th>Vía</th><th>Receta</th><th>Estado</th><th class="text-right">Stock</th><th></th>
+            <th>Nombre</th><th>Principio activo</th><th>Formato</th>
+            <th>Precio</th><th class="text-right">Cantidad</th><th></th>
           </tr>
         </thead>
         <tbody id="TablaMeds"></tbody>
@@ -81,6 +81,17 @@
       <table class="table table-sm mb-0">
         <thead class="thead-light"><tr><th>Id</th><th>Usuario</th><th>Rol</th><th></th></tr></thead>
         <tbody id="TablaUsuarios"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Clientes (datos reales desde GET /api/clients) -->
+  <div>
+    <h5 class="font-weight-bold">Clientes</h5>
+    <div class="card shadow-sm mb-4">
+      <table class="table table-sm mb-0">
+        <thead class="thead-light"><tr><th>Id</th><th>Nombre</th><th>Apellido</th><th>Email</th></tr></thead>
+        <tbody id="TablaClientes"></tbody>
       </table>
     </div>
   </div>
@@ -241,67 +252,20 @@ let usuarios = [
   { id_usuario: 2, nombre: 'usuario', clave: 'usuario123', rol: 'USUARIO' }
 ];
 
-/* BD: tabla `medicamentos` del PDF + una columna nueva para el stock:
-       ALTER TABLE medicamentos ADD COLUMN stock INT NOT NULL DEFAULT 0;
-   (o, mejor, una tabla aparte `stock_movimientos` si quieres historial) */
-let medicamentos = [
-  { id_medicamento: 1, nombre_comercial: 'Paracetamol SAG Manufacturing 500 mg comprimidos EFG', principio_activo: 'Paracetamol',
-    concentracion: '500 mg por comprimido', forma_farmaceutica: 'Comprimido', via_administracion: 'Oral',
-    excipientes: 'Excipientes según ficha técnica',
-    indicaciones: 'Tratamiento sintomático del dolor leve a moderado y estados febriles.',
-    posologia: 'Adultos y niños a partir de 12 años: 1 comprimido de 1 a 4 veces al día.',
-    contraindicaciones: 'Hipersensibilidad al paracetamol; insuficiencia hepática grave.',
-    efectos_adversos: 'Náuseas, erupción cutánea; riesgo de hepatotoxicidad por sobredosis.',
-    interacciones: 'Anticoagulantes cumarínicos; alcohol; otros fármacos hepatotóxicos.',
-    presentacion: 'Caja con comprimidos', condiciones_conservacion: 'Conservar por debajo de 25 °C',
-    requiere_receta: false, titular_autorizacion: 'SAG Manufacturing', fabricante: 'SAG Manufacturing',
-    fecha_registro: '2024-01-15', estado: 'ACTIVO', stock: 120 },
-  { id_medicamento: 2, nombre_comercial: 'Ibuprofeno Pensa Pharma 400 mg comprimidos recubiertos con película EFG', principio_activo: 'Ibuprofeno',
-    concentracion: '400 mg por comprimido', forma_farmaceutica: 'Comprimido recubierto con película', via_administracion: 'Oral',
-    excipientes: 'Excipientes según ficha técnica',
-    indicaciones: 'Alivio sintomático del dolor leve a moderado y de la fiebre.',
-    posologia: 'Adultos: según indicación médica; tomar con un vaso de agua.',
-    contraindicaciones: 'Úlcera péptica activa, insuficiencia cardíaca grave, tercer trimestre del embarazo.',
-    efectos_adversos: 'Dispepsia, náuseas, dolor abdominal, mareo, erupción cutánea.',
-    interacciones: 'Anticoagulantes, antihipertensivos, diuréticos, otros AINE, corticoides.',
-    presentacion: 'Caja con comprimidos recubiertos', condiciones_conservacion: 'Conservar por debajo de 25 °C',
-    requiere_receta: false, titular_autorizacion: 'Pensa Pharma', fabricante: 'Pensa Pharma',
-    fecha_registro: '2024-02-10', estado: 'ACTIVO', stock: 80 },
-  { id_medicamento: 3, nombre_comercial: 'Amoxicilina Sandoz 500 mg cápsulas duras EFG', principio_activo: 'Amoxicilina trihidrato equivalente a amoxicilina',
-    concentracion: '500 mg por cápsula', forma_farmaceutica: 'Cápsula dura', via_administracion: 'Oral',
-    excipientes: 'Excipientes según ficha técnica',
-    indicaciones: 'Infecciones bacterianas sensibles a amoxicilina.',
-    posologia: 'La dosis depende de la infección, edad, peso y función renal; debe prescribirla el médico.',
-    contraindicaciones: 'Hipersensibilidad a penicilinas o betalactámicos.',
-    efectos_adversos: 'Diarrea, náuseas, erupción cutánea, reacciones alérgicas.',
-    interacciones: 'Alopurinol, anticoagulantes, metotrexato; puede reducir la eficacia de anticonceptivos orales.',
-    presentacion: 'Caja con cápsulas duras', condiciones_conservacion: 'Conservar por debajo de 25 °C',
-    requiere_receta: true, titular_autorizacion: 'Sandoz', fabricante: 'Sandoz',
-    fecha_registro: '2024-03-05', estado: 'ACTIVO', stock: 5 },
-  { id_medicamento: 4, nombre_comercial: 'Paracetamol SUN 650 mg comprimidos EFG', principio_activo: 'Paracetamol',
-    concentracion: '650 mg por comprimido', forma_farmaceutica: 'Comprimido', via_administracion: 'Oral',
-    excipientes: 'Excipientes según ficha técnica',
-    indicaciones: 'Alivio sintomático del dolor leve a moderado y estados febriles.',
-    posologia: 'Adultos: según indicación del prospecto o prescripción médica; no exceder la dosis máxima diaria.',
-    contraindicaciones: 'Hipersensibilidad al paracetamol; insuficiencia hepática grave.',
-    efectos_adversos: 'Náuseas, reacciones alérgicas; hepatotoxicidad en caso de sobredosis.',
-    interacciones: 'Alcohol, anticoagulantes cumarínicos, fármacos hepatotóxicos.',
-    presentacion: 'Caja con comprimidos', condiciones_conservacion: 'Conservar en lugar seco, por debajo de 25 °C',
-    requiere_receta: false, titular_autorizacion: 'SUN Pharmaceutical', fabricante: 'SUN Pharmaceutical',
-    fecha_registro: '2024-04-20', estado: 'ACTIVO', stock: 60 }
-];
+/* Entidad Medicamento (backend): id, nombre, principioActivo, cantidad, formatoMedicamento, precio.
+   Los datos se cargan desde GET /api/medicamentos (ya no hay datos de ejemplo en memoria). */
+let medicamentos = [];
+let errMeds = '';          // mensaje si falla la carga
+let editandoMed = null;    // medicamento en edición (null = alta nueva)
 
-/* Definición de campos (sirve para el formulario y para la ficha de detalle) */
+/* Sugerencias de formato (según database.sql). Tu enum FormatoMedicamento está vacío en el backend. */
+const FORMATOS = ['Comprimidos','Sobres','Cápsulas','Jarabe','Inhalador','Gotas','Suspensión','Masticables','Comprimidos Bucodispersables'];
+
+/* [clave JSON, etiqueta, tipo, ancho, obligatorio] */
 const CAMPOS = [
-  ['nombre_comercial','Nombre comercial','text',12,1], ['principio_activo','Principio activo','text',6,1],
-  ['concentracion','Concentración','text',6,1], ['forma_farmaceutica','Forma farmacéutica','text',6,1],
-  ['via_administracion','Vía de administración','text',6,1], ['excipientes','Excipientes','textarea',12,0],
-  ['indicaciones','Indicaciones','textarea',12,1], ['posologia','Posología','textarea',12,1],
-  ['contraindicaciones','Contraindicaciones','textarea',12,0], ['efectos_adversos','Efectos adversos','textarea',12,0],
-  ['interacciones','Interacciones','textarea',12,0], ['presentacion','Presentación','text',6,0],
-  ['condiciones_conservacion','Condiciones de conservación','text',6,0],
-  ['titular_autorizacion','Titular de autorización','text',6,0], ['fabricante','Fabricante','text',6,0],
-  ['fecha_registro','Fecha de registro','date',4,0], ['estado','Estado','text',4,1], ['stock','Stock inicial','number',4,1]
+  ['nombre','Nombre','text',12,1], ['principioActivo','Principio activo','text',6,1],
+  ['formatoMedicamento','Formato','text',6,0], ['cantidad','Cantidad (stock)','number',6,1],
+  ['precio','Precio (€)','number',6,0]
 ];
 
 let sesion = null; // usuario autenticado
@@ -312,14 +276,22 @@ $(function () {
 
   $('#AnioActual').text(new Date().getFullYear());
 
+  /* ---------- Capa de API ---------- */
+  async function api(method, url, body) {
+    const r = await fetch(url, { method, headers: Object.assign({ 'Accept': 'application/json' }, body ? { 'Content-Type': 'application/json' } : {}),
+                                 body: body ? JSON.stringify(body) : undefined });
+    if (!r.ok) throw new Error(r.status === 403 ? 'HTTP 403 (permisos o protección CSRF de Spring Security)'
+                             : r.status === 404 ? 'HTTP 404 (no encontrado)' : 'HTTP ' + r.status);
+    const t = await r.text();
+    if (!t) return null;
+    try { return JSON.parse(t); } catch (e) { throw new Error('No hay sesión en el servidor (inicia sesión en Spring Security)'); }
+  }
+
   /* ---------- Formulario dinámico de medicamento ---------- */
   $('#CamposMed').html(CAMPOS.map(([k, l, t, w, req]) =>
-    `<div class="form-group col-md-${w}"><label>${l}${req ? ' *' : ''}</label>` +
-    (t === 'textarea' ? `<textarea id="f_${k}" class="form-control" rows="2"></textarea>`
-                      : `<input id="f_${k}" type="${t}" class="form-control">`) + `</div>` ).join('') +
-    `<div class="form-group col-md-12"><div class="custom-control custom-checkbox">
-       <input type="checkbox" class="custom-control-input" id="f_requiere_receta">
-       <label class="custom-control-label" for="f_requiere_receta">Requiere receta</label></div></div>`);
+    `<div class="form-group col-md-${w}"><label>${l}${req ? ' *' : ''}</label>
+       <input id="f_${k}" type="${t}" class="form-control" ${t === 'number' ? `min="0" step="${k === 'precio' ? '0.01' : '1'}"` : ''} ${k === 'formatoMedicamento' ? 'list="Formatos"' : ''}></div>`).join('') +
+    `<datalist id="Formatos">${FORMATOS.map(f => `<option value="${esc(f)}">`).join('')}</datalist>`);
 
   /* ---------- LOGIN ---------- */
   $('#BotonLogin').click(function () {
@@ -377,87 +349,100 @@ $(function () {
   /* ---------- LISTADO ---------- */
   $('#Buscar').on('input', pintarMeds);
 
-  function pintarTodo() { pintarMeds(); pintarUsuarios(); pintarJson(); }
+  function pintarTodo() { cargarMeds(); pintarUsuarios(); pintarJson(); pintarClientes(); }
+
+  async function cargarMeds() {
+    try { medicamentos = (await api('GET', '/api/medicamentos')) || []; errMeds = ''; }
+    catch (e) { medicamentos = []; errMeds = e.message; }
+    pintarMeds();
+  }
 
   function pintarMeds() {
-    /* BD: const r = await fetch('/api/medicamentos?q=' + encodeURIComponent(q));  medicamentos = await r.json();
-         SQL: SELECT * FROM medicamentos
-              WHERE nombre_comercial LIKE ? OR principio_activo LIKE ?
-              ORDER BY nombre_comercial;
-         (el servidor debe validar el rol; el filtrado en el cliente NO es seguridad) */
     const q = $('#Buscar').val().toLowerCase();
-    const lista = medicamentos.filter(m => (m.nombre_comercial + ' ' + m.principio_activo).toLowerCase().includes(q));
+    const lista = medicamentos.filter(m => ((m.nombre || '') + ' ' + (m.principioActivo || '')).toLowerCase().includes(q));
     $('#TablaMeds').html(lista.map(m => `
       <tr>
-        <td><a href="#" class="ver" data-id="${m.id_medicamento}">${esc(m.nombre_comercial)}</a></td>
-        <td>${esc(m.principio_activo)}</td><td>${esc(m.concentracion)}</td>
-        <td>${esc(m.forma_farmaceutica)}</td><td>${esc(m.via_administracion)}</td>
-        <td>${m.requiere_receta ? '<span class="badge badge-warning">Sí</span>' : '<span class="badge badge-light">No</span>'}</td>
-        <td><span class="badge badge-${m.estado === 'ACTIVO' ? 'success' : 'secondary'}">${esc(m.estado)}</span></td>
-        <td class="text-right ${m.stock < 10 ? 'stock-bajo' : ''}">${m.stock}</td>
-        <td class="text-right">${esAdmin() ? `<button class="btn btn-sm btn-outline-primary mas-stock" data-id="${m.id_medicamento}">+ Stock</button>` : ''}</td>
-      </tr>`).join('') || '<tr><td colspan="9" class="text-center text-muted py-3">No hay medicamentos que coincidan con la búsqueda.</td></tr>');
+        <td><a href="#" class="ver" data-id="${m.id}">${esc(m.nombre)}</a></td>
+        <td>${esc(m.principioActivo)}</td><td>${esc(m.formatoMedicamento ?? '—')}</td>
+        <td>${m.precio != null ? Number(m.precio).toFixed(2) + ' €' : '—'}</td>
+        <td class="text-right ${m.cantidad < 10 ? 'stock-bajo' : ''}">${m.cantidad}</td>
+        <td class="text-right text-nowrap">${esAdmin() ? `
+          <button class="btn btn-sm btn-outline-primary mas-stock" data-id="${m.id}">+ Stock</button>
+          <button class="btn btn-sm btn-outline-secondary editar-med" data-id="${m.id}">Editar</button>
+          <button class="btn btn-sm btn-outline-danger borrar-med" data-id="${m.id}">Eliminar</button>` : ''}</td>
+      </tr>`).join('') || `<tr><td colspan="6" class="text-center ${errMeds ? 'text-danger' : 'text-muted'} py-3">${
+        errMeds ? 'No se pudieron cargar los medicamentos: ' + esc(errMeds) : 'No hay medicamentos que coincidan con la búsqueda.'}</td></tr>`);
   }
+
+  const medPorId = id => medicamentos.find(x => x.id == id);
 
   $('#TablaMeds').on('click', '.ver', function (e) {
     e.preventDefault();
-    const m = medicamentos.find(x => x.id_medicamento == $(this).data('id'));
-    $('#DetalleTitulo').text(m.nombre_comercial);
-    $('#DetalleCuerpo').html(CAMPOS.filter(c => c[0] !== 'nombre_comercial').map(([k, l]) =>
-      `<dt>${l === 'Stock inicial' ? 'Stock' : l}</dt><dd>${esc(m[k] || '—')}</dd>`).join('') +
-      `<dt>Requiere receta</dt><dd>${m.requiere_receta ? 'Sí' : 'No'}</dd>`);
+    const m = medPorId($(this).data('id'));
+    $('#DetalleTitulo').text(m.nombre);
+    $('#DetalleCuerpo').html(CAMPOS.filter(c => c[0] !== 'nombre').map(([k, l]) =>
+      `<dt>${l}</dt><dd>${esc(m[k] ?? '—')}</dd>`).join(''));
     $('#ModalDetalle').modal('show');
   });
 
-  /* ---------- ADMIN: AÑADIR MEDICAMENTO ---------- */
-  $('#BotonNuevoMed').click(function () {
-    $('#CamposMed input[type=text], #CamposMed input[type=date], #CamposMed textarea').val('');
-    $('#f_estado').val('ACTIVO'); $('#f_stock').val(0); $('#f_requiere_receta').prop('checked', false);
+  /* ---------- ADMIN: AÑADIR / EDITAR MEDICAMENTO ---------- */
+  function abrirFormMed(m) {
+    editandoMed = m || null;
+    $('#ModalMed .modal-title').text(m ? 'Editar medicamento' : 'Nuevo medicamento');
+    CAMPOS.forEach(([k]) => $('#f_' + k).val(m ? (m[k] ?? '') : ''));
+    if (!m) $('#f_cantidad').val(0);
     $('#ModalMed').modal('show');
-  });
+  }
+  $('#BotonNuevoMed').click(() => abrirFormMed(null));
+  $('#TablaMeds').on('click', '.editar-med', function () { abrirFormMed(medPorId($(this).data('id'))); });
 
-  $('#BotonGuardarMed').click(function () {
+  $('#BotonGuardarMed').click(async function () {
     if (!esAdmin()) return;
-    const nuevo = { id_medicamento: Math.max(0, ...medicamentos.map(x => x.id_medicamento)) + 1 };
+    const obj = editandoMed ? { id: editandoMed.id } : {};
     for (const [k, l, t, w, req] of CAMPOS) {
-      let v = $('#f_' + k).val().trim();
+      const v = $('#f_' + k).val().trim();
       if (req && !v) return alert(`El campo "${l}" es obligatorio.`);
-      nuevo[k] = t === 'number' ? Math.max(0, parseInt(v) || 0) : v;
+      if (t === 'number') {
+        if (v !== '' && !(Number(v) >= 0)) return alert(`"${l}" debe ser un número válido.`);
+        if (k === 'cantidad' && !Number.isInteger(Number(v))) return alert('La cantidad debe ser un número entero.');
+        obj[k] = v === '' ? null : Number(v);
+      } else obj[k] = v === '' ? null : v;
     }
-    nuevo.requiere_receta = $('#f_requiere_receta').is(':checked');
-
-    /* BD: await fetch('/api/medicamentos', {method:'POST', headers:{'Content-Type':'application/json'},
-              body: JSON.stringify(nuevo)});   // luego volver a llamar a pintarMeds() para recargar
-         SQL: INSERT INTO medicamentos (nombre_comercial, principio_activo, concentracion, forma_farmaceutica,
-                via_administracion, excipientes, indicaciones, posologia, contraindicaciones, efectos_adversos,
-                interacciones, presentacion, condiciones_conservacion, requiere_receta, titular_autorizacion,
-                fabricante, fecha_registro, estado, stock)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-         (id_medicamento, creado_en y actualizado_en los genera la propia BD) */
-    medicamentos.push(nuevo);
-    $('#ModalMed').modal('hide');
-    pintarTodo();
+    try {
+      if (editandoMed) await api('PUT', '/api/medicamentos', obj);
+      else await api('POST', '/api/medicamentos', obj);
+      $('#ModalMed').modal('hide');
+      cargarMeds();
+    } catch (e) { alert('No se pudo guardar: ' + e.message); }
   });
 
-  /* ---------- ADMIN: AÑADIR STOCK ---------- */
+  /* ---------- ADMIN: AÑADIR STOCK (PUT con la cantidad actualizada) ---------- */
   $('#TablaMeds').on('click', '.mas-stock', function () {
-    const m = medicamentos.find(x => x.id_medicamento == $(this).data('id'));
-    $('#StockId').val(m.id_medicamento); $('#StockNombre').text(m.nombre_comercial);
+    const m = medPorId($(this).data('id'));
+    $('#StockId').val(m.id); $('#StockNombre').text(m.nombre);
     $('#StockCantidad').val(10); $('#ModalStock').modal('show');
   });
 
-  $('#BotonGuardarStock').click(function () {
+  $('#BotonGuardarStock').click(async function () {
     if (!esAdmin()) return;
-    const id = parseInt($('#StockId').val()), cant = parseInt($('#StockCantidad').val());
+    const m = medPorId($('#StockId').val()), cant = parseInt($('#StockCantidad').val());
     if (!(cant > 0)) return alert('Indique una cantidad mayor que 0.');
+    try {
+      await api('PUT', '/api/medicamentos', Object.assign({}, m, { cantidad: m.cantidad + cant }));
+      $('#ModalStock').modal('hide');
+      cargarMeds();
+    } catch (e) { alert('No se pudo actualizar el stock: ' + e.message); }
+  });
 
-    /* BD: await fetch(`/api/medicamentos/${id}/stock`, {method:'PATCH',
-              headers:{'Content-Type':'application/json'}, body: JSON.stringify({cantidad: cant})});
-         SQL (suma atómica, evita errores si dos admins editan a la vez):
-              UPDATE medicamentos SET stock = stock + ? WHERE id_medicamento = ?; */
-    medicamentos.find(x => x.id_medicamento === id).stock += cant;
-    $('#ModalStock').modal('hide');
-    pintarTodo();
+  /* ---------- ADMIN: ELIMINAR ---------- */
+  $('#TablaMeds').on('click', '.borrar-med', async function () {
+    const m = medPorId($(this).data('id'));
+    if (!confirm(`¿Eliminar "${m.nombre}"?`)) return;
+    try {
+      // Tu controlador declara la ruta /{id} pero lee @RequestParam: se envía en ambos sitios.
+      await api('DELETE', `/api/medicamentos/${m.id}?id=${m.id}`);
+      cargarMeds();
+    } catch (e) { alert('No se pudo eliminar: ' + e.message); }
   });
 
   /* ---------- ADMIN: GESTIÓN DE USUARIOS ---------- */
@@ -484,6 +469,25 @@ $(function () {
     usuarios = usuarios.filter(x => x.id_usuario != id);
     pintarTodo();
   });
+
+  /* ---------- CLIENTES: fetch real a GET /api/clients (ClientRestController) ---------- */
+  async function pintarClientes() {
+    const $t = $('#TablaClientes');
+    $t.html('<tr><td colspan="4" class="text-center text-muted py-3">Cargando…</td></tr>');
+    try {
+      const r = await fetch('/api/clients', { headers: { 'Accept': 'application/json' } });
+      if (!r.ok) throw new Error('El servidor respondió HTTP ' + r.status);
+      // Si Spring Security redirige a su pantalla de login, llega HTML en vez de JSON
+      if (!(r.headers.get('content-type') || '').includes('json'))
+        throw new Error('No hay sesión en el servidor (inicia sesión en Spring Security)');
+      const clientes = await r.json();
+      $t.html(clientes.map(c => `
+        <tr><td>${c.id}</td><td>${esc(c.nombre)}</td><td>${esc(c.apellido)}</td><td>${esc(c.email)}</td></tr>`).join('')
+        || '<tr><td colspan="4" class="text-center text-muted py-3">No hay clientes.</td></tr>');
+    } catch (e) {
+      $t.html(`<tr><td colspan="4" class="text-center text-danger py-3">No se pudieron cargar los clientes: ${esc(e.message)}</td></tr>`);
+    }
+  }
 
   /* ---------- Vista JSON de las tablas temporales ---------- */
   function pintarJson() {
