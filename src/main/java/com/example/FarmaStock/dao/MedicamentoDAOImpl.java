@@ -29,10 +29,11 @@ public class MedicamentoDAOImpl implements MedicamentoDAO{
     public Optional<Medicamento> update(Medicamento medicamento) {
         Optional<Medicamento> medicamentoToUpdate = this.findById(medicamento.getId());
         if (medicamentoToUpdate.isEmpty()) {
-            return Optional.of(entityManager.merge(medicamento));
+            return Optional.empty();
         }
         else   {
-            return Optional.empty();
+            return Optional.of(entityManager.merge(medicamentoToUpdate.get()));
+
         }
     }
 

@@ -4,7 +4,9 @@ import com.example.FarmaStock.dao.FarmaceuticoDAO;
 import com.example.FarmaStock.entities.Farmaceutico;
 import com.example.FarmaStock.entities.Medicamento;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,19 +24,19 @@ public class FarmaceuticoRestController {
     }
 
     @GetMapping("/farmaceuticos")
+    @ResponseStatus(HttpStatus.OK)
     public List<Farmaceutico> findAll() {
         return farmaceuticoDAO.findAll();
     }
 
     @GetMapping("/farmaceuticos/{farmaceuticoId}")
-    public Farmaceutico getFarmaceutico(@PathVariable Long farmaceuticoId) {
-
+    @ResponseStatus(HttpStatus.OK)
+    public Farmaceutico getFarmaceutico(@PathVariable Long farmaceuticoId)
+    {
         Farmaceutico farmaceutico = this.farmaceuticoDAO.findById(farmaceuticoId);
-
         if (farmaceutico == null) {
-            throw new RuntimeException("Farmaceutico id not found - " + farmaceuticoId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
         return farmaceutico;
     }
 
@@ -42,9 +44,7 @@ public class FarmaceuticoRestController {
     public Farmaceutico addFarmaceutico(@RequestBody Farmaceutico theFarmaceutico) {
         
         theFarmaceutico.setId(null);
-        
         this.farmaceuticoDAO.save(theFarmaceutico);
-
         return theFarmaceutico;
     }
 
@@ -52,7 +52,6 @@ public class FarmaceuticoRestController {
     public Farmaceutico updateFarmaceutico(@RequestBody Farmaceutico theFarmaceutico) {
 
         this.farmaceuticoDAO.update(theFarmaceutico);
-
         return theFarmaceutico;
     }
 
@@ -62,7 +61,7 @@ public class FarmaceuticoRestController {
         Farmaceutico tempFarmaceutico = this.farmaceuticoDAO.findById(farmaceuticoId);
 
         if (tempFarmaceutico == null) {
-            throw new RuntimeException("Farmaceutico id not found - " + farmaceuticoId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
         this.farmaceuticoDAO.delete(farmaceuticoId);
@@ -74,7 +73,7 @@ public class FarmaceuticoRestController {
     public Map<String, Object> getFarmaceuticoWithMedicamentos(@PathVariable Long id) {
         Farmaceutico farmaceutico = farmaceuticoDAO.findById(id);
         if (farmaceutico == null) {
-            throw new RuntimeException("Farmaceutico id not found - " + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
         List<Medicamento> medicamentos = farmaceuticoDAO.findMedicamentosByFarmaceuticoId(id);
@@ -82,7 +81,6 @@ public class FarmaceuticoRestController {
         Map<String, Object> response = new HashMap<>();
         response.put("farmaceutico", farmaceutico);
         response.put("medicamentos", medicamentos);
-
         return response;
     }
 }

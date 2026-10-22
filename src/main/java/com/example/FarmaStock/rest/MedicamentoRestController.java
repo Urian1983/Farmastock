@@ -42,14 +42,14 @@ public class MedicamentoRestController {
 
     @GetMapping("/medicamentos/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Medicamento findById(@RequestParam int id) {
+    public Medicamento findById(@PathVariable int id) {
         return medicamentoDAO.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/medicamentos/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@RequestParam int id) {
+    public void delete(@PathVariable int id) {
         medicamentoDAO.delete(id);
     }
 }
